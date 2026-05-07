@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenClose — Dennis Action Kit</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1B4332;
+      --green-light: #2D6A4F;
+      --gold: #C9A84C;
+      --bg: #0A0D12;
+      --surface: #111520;
+      --surface2: #1A1E2E;
+      --text: #FFFFFF;
+      --text-muted: rgba(255,255,255,0.55);
+      --border: rgba(255,255,255,0.08);
+      --success: #22c55e;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      padding: 20px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .logo { color: var(--gold); font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+    .logo span { color: rgba(201,168,76,0.4); font-size: 13px; font-weight: 400; margin-left: 8px; }
+    .header-badge {
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 60px 28px 40px;
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--gold); font-style: normal; }
+    .hero p {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 540px;
+      margin: 0 auto 32px;
+    }
+
+    /* PROGRESS BAR */
+    .progress-strip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      max-width: 760px;
+      margin: 0 auto 48px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 560px) { .progress-strip { grid-template-columns: 1fr; } }
+    .prog-item { text-align: center; }
+    .prog-num {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .prog-label { font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.3px; }
+
+    /* SECTION */
+    .section {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 28px 60px;
+    }
+    .section-tag {
+      display: inline-block;
+      background: rgba(27,67,50,0.5);
+      border: 1px solid rgba(201,168,76,0.25);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .section h2 {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 800;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    .section > p {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+
+    /* ACTION CARD */
+    .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .action-card-header {
+      padding: 18px 24px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .action-card-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .action-card-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .time-pill {
+      background: rgba(27,67,50,0.5);
+      color: #4ade80;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* STEPS INSIDE CARD */
+    .steps-list {
+      padding: 16px 24px;
+    }
+    .step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num-badge {
+      width: 26px; height: 26px;
+      background: var(--green);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content { flex: 1; }
+    .step-content strong { font-size: 14px; display: block; margin-bottom: 3px; }
+    .step-content p { font-size: 13px; color: var(--text-muted); }
+    .step-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(27,67,50,0.4);
+      border: 1px solid rgba(201,168,76,0.2);
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .step-link:hover { background: rgba(27,67,50,0.7); }
+    .step-link svg { flex-shrink: 0; }
+
+    /* COPY BOX */
+    .copy-box-wrap {
+      padding: 0 24px 20px;
+    }
+    .copy-box-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-box-label .platform-tag {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0;
+      font-weight: 600;
+    }
+    .copy-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.85);
+      white-space: pre-wrap;
+      position: relative;
+      font-family: inherit;
+    }
+    .copy-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+    }
+    .copy-btn:hover { background: var(--green-light); }
+    .copy-btn:active { transform: scale(0.97); }
+    .copy-btn.copied {
+      background: #166534;
+      color: #4ade80;
+    }
+    .copy-btn svg { flex-shrink: 0; }
+
+    /* DEMO LINKS */
+    .demo-links-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 560px) { .demo-links-grid { grid-template-columns: 1fr; } }
+    .demo-link-card {
+      background: var(--surface2);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s;
+      display: block;
+    }
+    .demo-link-card:hover { border-color: rgba(201,168,76,0.5); }
+    .demo-link-card .price { color: var(--gold); font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+    .demo-link-card .desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .demo-link-card .open-btn {
+      display: inline-block;
+      background: rgba(27,67,50,0.4);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 6px;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* KEYS SECTION */
+    .key-card {
+      background: var(--surface);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .key-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .priority-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    .p1 { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .p2 { background: rgba(234,179,8,0.15); color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
+    .p3 { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+    .key-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
+    .key-steps { list-style: none; }
+    .key-steps li {
+      font-size: 14px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: rgba(255,255,255,0.8);
+    }
+    .key-steps li:last-child { border-bottom: none; }
+    .key-steps li::before {
+      content: '→';
+      color: var(--gold);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .key-link {
+      color: var(--gold);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 32px 28px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    footer strong { color: var(--gold); }
+
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">GreenClose <span>Dennis's Action Kit</span></div>
+  <div class="header-badge">Private — Do Not Share</div>
+</div>
+
+<div class="hero">
+  <h1>Everything is built.<br><em>Now you just need to post.</em></h1>
+  <p>This page has every post, link, and step you need. Each action takes under 2 minutes. Start with Step 1.</p>
+</div>
+
+<div class="section">
+  <div class="progress-strip">
+    <div class="prog-item">
+      <div class="prog-num">3</div>
+      <div class="prog-label">Live Demo Pages</div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-num">6</div>
+      <div class="prog-label">Facebook Groups Ready</div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-num">$0</div>
+      <div class="prog-label">Revenue So Far</div>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO LINKS -->
+<div class="section">
+  <div class="section-tag">Your Sales Tools</div>
+  <h2>Live Demo Pages — Send These to Anyone</h2>
+  <p>These are already live. Share them anywhere. Send them in any DM or reply to anyone asking "what does it look like?"</p>
+
+  <div class="demo-links-grid">
+    <a href="quotes/DEMO002.html" target="_blank" class="demo-link-card">
+      <div class="price">$2,800</div>
+      <div class="desc">Spring cleanup<br>Greenscape Pro</div>
+      <div class="open-btn">Open Demo →</div>
+    </a>
+    <a href="quotes/DEMO003.html" target="_blank" class="demo-link-card">
+      <div class="price">$12,000</div>
+      <div class="desc">HOA grounds<br>Apex Outdoor Services</div>
+      <div class="open-btn">Open Demo →</div>
+    </a>
+    <a href="quotes/DEMO001.html" target="_blank" class="demo-link-card">
+      <div class="price">$25,000</div>
+      <div class="desc">Full backyard<br>Rivera Outdoor Living</div>
+      <div class="open-btn">Open Demo →</div>
+    </a>
+  </div>
+
+  <p style="font-size: 13px; color: var(--text-muted);">
+    When someone asks to see what it looks like, send whichever demo is closest to their job size. The $2,800 demo works great for smaller residential jobs. The $25,000 demo impresses high-end clients. The $12,000 HOA demo works for commercial prospects.
+  </p>
+</div>
+
+<hr class="divider" style="max-width: 760px; margin: 0 auto 48px; border-top: 1px solid var(--border);">
+
+<!-- OUTREACH ACTIONS -->
+<div class="section">
+  <div class="section-tag">Step 1 of 3 — 10 Minutes Total</div>
+  <h2>Facebook Groups — Post This Right Now</h2>
+  <p>Post this in each group below. One click to open, paste the text, post. Do all 3 today. The other 3 later this week.</p>
+
+  <div class="action-card">
+    <div class="action-card-header">
+      <div>
+        <div class="action-card-title">Facebook Group Post — Value-First</div>
+        <div class="action-card-sub">Same post works in all 6 groups. Copy once, use everywhere.</div>
+      </div>
+      <div class="time-pill">~2 min per group</div>
+    </div>
+
+    <div class="copy-box-wrap">
+      <div class="copy-box-label">
+        Post Text
+        <span class="platform-tag">Facebook</span>
+      </div>
+      <div class="copy-box" id="fb-post">Landscaping contractors: what does your quote look like right now?
+
+Serious question. I've been talking to a lot of landscaping pros lately and almost everyone sends the same thing — a PDF or a Word doc with line items and a total.
+
+Your potential client gets it, glances at the number, and either ghosts you or asks for a discount.
+
+I built something different. Instead of a PDF, you send your client a link — a full interactive page built specifically for their project. It shows them the vision, walks them through the scope like a story, and presents pricing in a way that makes the number feel earned.
+
+Here's what one looks like for a $2,800 spring cleanup job: https://mcbobberson.github.io/quote-experience/quotes/DEMO002.html
+
+First 3 contractors who comment or DM me get one built for free on their next real quote. I want to see what you're quoting and prove this works.
+
+What does your current quoting process look like?</div>
+      <button class="copy-btn" onclick="copyText('fb-post', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Post Text
+      </button>
+    </div>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-badge">1</div>
+        <div class="step-content">
+          <strong>Landscaping Business Owners</strong>
+          <p>Large general contractor group — highest volume</p>
+          <a href="https://www.facebook.com/groups/landscapingbusinessowners/" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Group →
+          </a>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-badge">2</div>
+        <div class="step-content">
+          <strong>Lawn Care &amp; Landscaping Business Group</strong>
+          <p>Broad audience, good engagement</p>
+          <a href="https://www.facebook.com/groups/LawnCareandLandscapingBusiness/" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Group →
+          </a>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-badge">3</div>
+        <div class="step-content">
+          <strong>Lawn Care Business Owners (Mike Andes)</strong>
+          <p>Growth-focused, high quality members</p>
+          <a href="https://www.facebook.com/groups/landscapebusiness/" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Group →
+          </a>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-badge">4</div>
+        <div class="step-content">
+          <strong>Landscaping Entrepreneurs</strong>
+          <p>Entrepreneurial mindset — very receptive to tools</p>
+          <a href="https://www.facebook.com/groups/landscapingentrepreneurs/" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Group →
+          </a>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-badge">5</div>
+        <div class="step-content">
+          <strong>The Lawn Care Nut</strong>
+          <p>Operations-focused — check rules tab before posting</p>
+          <a href="https://www.facebook.com/groups/thelawncarenut/" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Group →
+          </a>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-badge">6</div>
+        <div class="step-content">
+          <strong>Landscape Contractors</strong>
+          <p>Contractor-specific, professional tone</p>
+          <a href="https://www.facebook.com/groups/1021656175305793/" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Group →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REDDIT -->
+<div class="section">
+  <div class="section-tag">Step 2 of 3 — 5 Minutes Total</div>
+  <h2>Reddit — Two Subreddits</h2>
+  <p>Post in r/landscaping and r/lawncare. Use the title and body below. Paste exactly as written.</p>
+
+  <div class="action-card">
+    <div class="action-card-header">
+      <div>
+        <div class="action-card-title">Reddit Post</div>
+        <div class="action-card-sub">Post in both subreddits — r/landscaping and r/lawncare</div>
+      </div>
+      <div class="time-pill">~2 min each</div>
+    </div>
+
+    <div class="copy-box-wrap">
+      <div class="copy-box-label">
+        Post Title
+        <span class="platform-tag">Reddit</span>
+      </div>
+      <div class="copy-box" id="reddit-title">Built a tool for landscaping contractors — instead of PDF quotes, you send a link. Anyone want to try it?</div>
+      <button class="copy-btn" onclick="copyText('reddit-title', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Title
+      </button>
+    </div>
+
+    <div class="copy-box-wrap" style="padding-top: 8px;">
+      <div class="copy-box-label">
+        Post Body
+        <span class="platform-tag">Reddit</span>
+      </div>
+      <div class="copy-box" id="reddit-body">I've been building a service for landscaping contractors that turns quote data into a full interactive HTML page — your client gets a link instead of a PDF attachment.
+
+The page shows:
+- Their vision reflected back to them in specific language
+- The scope of work laid out as a story (not a spreadsheet)
+- Interactive pricing so they can see phases and options
+- Your credentials and testimonials
+- One clear CTA at the end
+
+The idea: most homeowners open quotes on their phone. A well-designed experience converts better than a PDF.
+
+Here's a real example built for a $2,800 spring cleanup job:
+https://mcbobberson.github.io/quote-experience/quotes/DEMO002.html
+
+And a $25,000 full backyard transformation:
+https://mcbobberson.github.io/quote-experience/quotes/DEMO001.html
+
+I'm looking for 3 contractors to try it on a real quote for free. You submit the job details (scope, pricing, client name), I build the page, you send it to your client and tell me what happens.
+
+If you're quoting a job right now and want to try it — drop a comment or DM me.</div>
+      <button class="copy-btn" onclick="copyText('reddit-body', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Body
+      </button>
+    </div>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-badge">1</div>
+        <div class="step-content">
+          <strong>r/landscaping</strong>
+          <p>Large, active subreddit — landscaping professionals and enthusiasts</p>
+          <a href="https://www.reddit.com/r/landscaping/submit" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Submit to r/landscaping →
+          </a>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-badge">2</div>
+        <div class="step-content">
+          <strong>r/lawncare</strong>
+          <p>Focused on lawn care businesses — high contractor density</p>
+          <a href="https://www.reddit.com/r/lawncare/submit" target="_blank" class="step-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Submit to r/lawncare →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DM TEMPLATE -->
+<div class="section">
+  <div class="section-tag">Step 3 of 3 — When You Get Replies</div>
+  <h2>Someone Responded — Send This DM</h2>
+  <p>When anyone comments, DMs you, or shows interest after seeing your post — reply with this. Don't improvise. This is the script.</p>
+
+  <div class="action-card">
+    <div class="action-card-header">
+      <div>
+        <div class="action-card-title">Reply / DM Template</div>
+        <div class="action-card-sub">Customize [Name] and [the project/topic they mentioned]. Everything else stays as-is.</div>
+      </div>
+      <div class="time-pill">30 seconds</div>
+    </div>
+    <div class="copy-box-wrap">
+      <div class="copy-box-label">DM / Reply Text</div>
+      <div class="copy-box" id="dm-reply">Hey [Name] — thanks for reaching out.
+
+Quick question before I build yours: what's the next job you're quoting? Just the rough scope and approximate value is enough.
+
+I'll build the full interactive experience around it — takes about 48 hours. You send the link to your client instead of a PDF, then let me know how it lands.
+
+No charge for this one. I'm offering the first 3 free because I want to see how contractors' clients actually respond when they get this instead of a PDF.
+
+What's the job?</div>
+      <button class="copy-btn" onclick="copyText('dm-reply', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy DM Text
+      </button>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-card-header">
+      <div>
+        <div class="action-card-title">Send Them to the Intake Form</div>
+        <div class="action-card-sub">Once they say yes — send this link so they can fill out the job details.</div>
+      </div>
+    </div>
+    <div class="copy-box-wrap">
+      <div class="copy-box-label">Intake Form Link</div>
+      <div class="copy-box" id="intake-link">https://mcbobberson.github.io/quote-experience/intake/</div>
+      <button class="copy-btn" onclick="copyText('intake-link', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Intake Link
+      </button>
+    </div>
+  </div>
+</div>
+
+<hr style="max-width: 760px; margin: 0 auto 48px; border: none; border-top: 1px solid var(--border);">
+
+<!-- KEYS NEEDED -->
+<div class="section">
+  <div class="section-tag">Still Needed From You</div>
+  <h2>Two Keys Unlock the Full System</h2>
+  <p>Everything else is built and running. These two items will let the system generate and deliver quotes automatically.</p>
+
+  <div class="key-card">
+    <h3>Anthropic API Key <span class="priority-badge p1">Priority 1</span></h3>
+    <p>This powers the AI that actually generates each contractor's quote page. Without it, I have to build each quote manually. With it, the whole pipeline runs automatically.</p>
+    <ul class="key-steps">
+      <li>Go to <a href="https://console.anthropic.com" target="_blank" class="key-link">console.anthropic.com</a></li>
+      <li>Create an account (takes 2 minutes)</li>
+      <li>Add $50 in API credits (billing tab → add card)</li>
+      <li>Create an API key (API Keys tab → New Key)</li>
+      <li>Copy the key and paste it into the .env file: <code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-size: 13px;">ANTHROPIC_API_KEY=sk-ant-...</code></li>
+    </ul>
+  </div>
+
+  <div class="key-card">
+    <h3>Stripe Keys <span class="priority-badge p2">Priority 2</span></h3>
+    <p>Lets contractors pay directly on the site. Currently the system asks them to pay via Venmo/Zelle and start manually. Stripe makes it instant and automatic.</p>
+    <ul class="key-steps">
+      <li>Go to <a href="https://stripe.com" target="_blank" class="key-link">stripe.com</a> → create account with your identity</li>
+      <li>Get Publishable Key and Secret Key from the Dashboard → Developers → API Keys</li>
+      <li>Add webhook endpoint in Stripe: <code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-size: 13px;">https://greenclose.onrender.com/api/stripe/webhook</code></li>
+      <li>Add all 3 keys to .env file</li>
+    </ul>
+  </div>
+
+  <div class="key-card">
+    <h3>Deploy to Render <span class="priority-badge p3">Priority 3</span></h3>
+    <p>The backend is already written. Just needs to be connected to a free Render.com account to go live.</p>
+    <ul class="key-steps">
+      <li>Go to <a href="https://render.com" target="_blank" class="key-link">render.com</a> → sign in with GitHub</li>
+      <li>New Web Service → connect the quote-experience repo</li>
+      <li>Set all env vars from .env.example</li>
+      <li>Deploy (free tier)</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  Built by <strong>GreenClose</strong> — your autonomous sales machine.<br>
+  <span style="font-size: 12px; opacity: 0.5; margin-top: 6px; display: block;">This page is private. Share the demo links, not this URL.</span>
+</footer>
+
+<script>
+  function copyText(id, btn) {
+    const el = document.getElementById(id);
+    const text = el.innerText || el.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback for older browsers
+      const range = document.createRange();
+      range.selectNode(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy`;
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

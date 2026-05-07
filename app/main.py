@@ -123,7 +123,18 @@ async def process_quote_job(job_id: str, submission: IntakeSubmission):
         await db.update_job_status(job_id, "generating")
 
         # Generate the HTML quote page
-        html_content = await generate_quote_page(job_id, submission)
+        # If Anthropic API key is not set, fall back to template generator
+        if os.getenv("ANTHROPIC_API_KEY"):
+            html_content = await generate_quote_page(job_id, submission)
+        else:
+            # Template fallback — produces quality output without Claude API
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from template_quote import generate_quote_html
+            job_data = submission.model_dump()
+            job_data["job_id"] = job_id
+            html_content = generate_quote_html(job_data)
+            print(f"[INFO] Job {job_id}: Used template generator (no ANTHROPIC_API_KEY)")
 
         # Save the HTML file
         quote_file = QUOTES_DIR / f"{job_id}.html"
