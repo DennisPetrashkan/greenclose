@@ -650,6 +650,35 @@
       });
     }, { threshold: 0.15 });
     phases.forEach(p => observer.observe(p));
+
+    // Live pricing calculator
+    const phasePrices = { p1: 3200, p2: 8400, p3: 4800, p4: 3600, p5: 2200, p6: 2800, p7: 4500 };
+    const totalEl = document.querySelector('.total-num');
+    const totalNote = document.querySelector('.total-note');
+
+    function recalc() {
+      let total = 0;
+      let addons = [];
+      for (const [id, price] of Object.entries(phasePrices)) {
+        const cb = document.getElementById(id);
+        if (cb && cb.checked) total += price;
+      }
+      const baseTotal = Object.entries(phasePrices)
+        .filter(([id]) => id !== 'p7')
+        .reduce((sum, [, p]) => sum + p, 0);
+      totalEl.textContent = '$' + total.toLocaleString();
+      const p7 = document.getElementById('p7');
+      if (p7 && p7.checked) {
+        totalNote.textContent = 'All 6 phases + pergola included.';
+      } else {
+        totalNote.textContent = 'Add the optional pergola for +$4,500 more.';
+      }
+    }
+
+    document.querySelectorAll('.phase-toggle input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', recalc);
+    });
+    recalc(); // set initial state
   </script>
 </body>
 </html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Spring Yard Refresh — Greenscape Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --green: #1B4332;
+      --green-light: #2D6A4F;
+      --gold: #C9A84C;
+      --gold-light: #E8C870;
+      --dark: #0F1117;
+      --dark-card: #1A1D27;
+      --dark-card2: #13151E;
+      --white: #FFFFFF;
+      --white-dim: rgba(255,255,255,0.75);
+      --white-muted: rgba(255,255,255,0.45);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── STICKY HEADER ── */
+    .sticky-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sticky-header .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .sticky-header .brand span { color: var(--white-dim); font-size: 13px; font-family: 'Inter', sans-serif; display: block; font-weight: 400; }
+    .approve-btn {
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .approve-btn:hover { background: var(--gold-light); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 80vh;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0a1a12 0%, #0F1117 50%, #0d1520 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 120px 24px 80px;
+      text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(27,67,50,0.35) 0%, transparent 70%);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 640px; }
+    .hero-eyebrow {
+      font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); font-weight: 600; margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 6vw, 58px);
+      line-height: 1.15;
+      font-weight: 700;
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+    .hero-headline em { color: var(--gold); font-style: normal; }
+    .hero-sub {
+      font-size: 17px; line-height: 1.75; color: var(--white-dim);
+      max-width: 500px; margin: 0 auto 40px;
+      opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+    .hero-cta-group {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+    .btn-primary {
+      background: var(--gold); color: var(--dark);
+      padding: 15px 32px; border-radius: 10px;
+      font-weight: 700; font-size: 16px;
+      text-decoration: none; transition: all 0.2s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-secondary {
+      border: 1px solid rgba(201,168,76,0.4); color: var(--gold);
+      padding: 15px 32px; border-radius: 10px;
+      font-weight: 500; font-size: 16px;
+      text-decoration: none; transition: all 0.2s;
+      background: transparent;
+    }
+    .btn-secondary:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 24px; }
+    .container { max-width: 860px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); font-weight: 600; margin-bottom: 14px;
+    }
+    .section-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 3.5vw, 40px);
+      line-height: 1.25; font-weight: 700; margin-bottom: 20px;
+    }
+    .section-body { font-size: 16px; line-height: 1.8; color: var(--white-dim); }
+
+    /* ── WHAT YOU WANT ── */
+    .vision { background: var(--dark-card); }
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 36px;
+    }
+    @media(max-width:600px) { .two-col { grid-template-columns: 1fr; } }
+    .info-card {
+      background: var(--dark-card2);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px; padding: 24px;
+    }
+    .info-card h4 { color: var(--gold); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+    .info-card p { color: var(--white-dim); line-height: 1.7; font-size: 15px; }
+
+    /* ── THE WORK ── */
+    .work { background: var(--dark); }
+    .service-list { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
+    .service-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .service-item.visible { opacity: 1; transform: translateY(0); }
+    .service-item:last-child { border-bottom: none; }
+    .service-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(27,67,50,0.5); border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .service-content { flex: 1; }
+    .service-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    .service-desc { color: var(--white-dim); font-size: 14px; line-height: 1.65; }
+    .service-note {
+      margin-top: 10px;
+      background: rgba(27,67,50,0.25);
+      border-left: 3px solid rgba(201,168,76,0.5);
+      padding: 8px 12px; border-radius: 0 6px 6px 0;
+      font-size: 13px; color: var(--gold-light); font-style: italic;
+    }
+
+    /* ── WHY US ── */
+    .why { background: var(--green); }
+    .stats-row {
+      display: flex; gap: 40px; flex-wrap: wrap; margin: 36px 0 40px;
+    }
+    .stat .num { font-family: 'Playfair Display', serif; font-size: 38px; color: var(--gold); font-weight: 700; }
+    .stat .label { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .promises { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 32px; }
+    .promise {
+      background: rgba(0,0,0,0.2); border-radius: 10px; padding: 20px;
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+    .promise .icon { font-size: 24px; margin-bottom: 10px; }
+    .promise h4 { font-size: 14px; font-weight: 600; color: var(--gold); margin-bottom: 6px; }
+    .promise p { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.55; }
+    .review {
+      margin-top: 40px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px; padding: 28px;
+      border-left: 4px solid var(--gold);
+    }
+    .review p { font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.85); font-style: italic; margin-bottom: 10px; }
+    .review cite { font-size: 13px; color: var(--gold); font-style: normal; font-weight: 600; }
+
+    /* ── PRICING ── */
+    .pricing { background: var(--dark-card); }
+    .service-toggles { display: flex; flex-direction: column; gap: 10px; margin: 32px 0; }
+    .stoggle input[type="checkbox"] { display: none; }
+    .stoggle label {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--dark-card2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 16px 20px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .stoggle input:checked + label {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.05);
+    }
+    .stoggle label .st-left { display: flex; align-items: center; gap: 12px; }
+    .stoggle label .chk {
+      width: 20px; height: 20px; border-radius: 5px;
+      border: 2px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 12px; transition: all 0.2s;
+    }
+    .stoggle input:checked + label .chk {
+      background: var(--gold); border-color: var(--gold); color: var(--dark);
+    }
+    .stoggle label .st-name { font-size: 15px; font-weight: 500; }
+    .stoggle label .st-desc { font-size: 12px; color: var(--white-muted); margin-top: 2px; }
+    .stoggle label .st-price { font-size: 17px; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+
+    .price-summary {
+      background: linear-gradient(135deg, var(--green) 0%, #152f23 100%);
+      border-radius: 12px; padding: 28px 32px;
+      border: 1px solid rgba(201,168,76,0.3);
+    }
+    .price-summary h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-bottom: 6px; }
+    .price-summary .total { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; line-height: 1; }
+    .price-summary .sub-note { color: rgba(255,255,255,0.55); margin-top: 8px; font-size: 13px; }
+    .price-summary .value-note {
+      margin-top: 18px; padding: 14px; background: rgba(0,0,0,0.2);
+      border-radius: 8px; font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6;
+    }
+    .price-summary .value-note strong { color: var(--gold); }
+
+    /* ── CTA ── */
+    .cta-section { background: var(--dark); text-align: center; }
+    .cta-card {
+      background: var(--dark-card);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 14px; padding: 56px 36px; max-width: 600px; margin: 0 auto;
+    }
+    .cta-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; margin-bottom: 14px;
+    }
+    .cta-card p { color: var(--white-dim); font-size: 16px; line-height: 1.7; margin-bottom: 32px; }
+    .availability-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold); font-size: 13px; font-weight: 600;
+      padding: 5px 14px; border-radius: 20px; margin-bottom: 24px;
+    }
+    .cta-note { font-size: 13px; color: var(--white-muted); margin-top: 16px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark-card2);
+      padding: 28px 24px; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer p { color: var(--white-muted); font-size: 13px; }
+    footer .brand-footer { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 6px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STICKY HEADER -->
+  <header class="sticky-header">
+    <div class="brand">
+      Greenscape Pro
+      <span>Spring Cleanup Quote — The Okafor Family</span>
+    </div>
+    <a href="#approve" class="approve-btn">Approve &amp; Schedule →</a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Prepared for Adaeze &amp; Chukwudi Okafor · 1422 Elmwood Ave</p>
+      <h1 class="hero-headline">
+        Your yard has been waiting all winter.<br>
+        Let's bring it <em>back to life</em> this May.
+      </h1>
+      <p class="hero-sub">
+        A clean, healthy yard before Memorial Day weekend. Here's exactly what we'll do — and why it'll look better than the day you moved in.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#scope" class="btn-secondary">See the work</a>
+        <a href="#approve" class="btn-primary">Lock in my spot</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU WANT -->
+  <section class="vision" id="vision">
+    <div class="container">
+      <p class="section-eyebrow">What we heard you say</p>
+      <h2 class="section-headline">You want a yard you're proud of again.</h2>
+      <p class="section-body">
+        You've got good bones. The beds just need clearing, the lawn needs a jump-start after winter, and that row of overgrown shrubs along the fence has been bothering you for two summers. Nothing here is complicated — it just needs attention, and you don't have the time or equipment to do it right.
+      </p>
+      <p class="section-body" style="margin-top: 14px;">That's what we're here for. Here's what we're going to do.</p>
+
+      <div class="two-col">
+        <div class="info-card">
+          <h4>The current situation</h4>
+          <p>Matted leaves and debris in all 4 beds, lawn patchy from winter stress, shrubs on the east fence overgrown by 18–24 inches.</p>
+        </div>
+        <div class="info-card">
+          <h4>What it looks like after</h4>
+          <p>Clean, edged beds with fresh mulch, a lawn that's fed and weed-treated, and shrubs trimmed to the clean shape they're supposed to be.</p>
+        </div>
+        <div class="info-card">
+          <h4>Your timing goal</h4>
+          <p>Done before Memorial Day weekend — May 24th. We can schedule your start date as early as May 12th.</p>
+        </div>
+        <div class="info-card">
+          <h4>Ongoing option</h4>
+          <p>Ask about our monthly maintenance plan. Customers who add maintenance after a cleanup save an average of $300 on next year's cleanup.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE WORK -->
+  <section class="work" id="scope">
+    <div class="container">
+      <p class="section-eyebrow">The work</p>
+      <h2 class="section-headline">Here's everything we'll do — nothing hidden.</h2>
+      <p class="section-body">Every item below is included in your quote. No surprises. No extras that appear on invoice day.</p>
+
+      <div class="service-list">
+
+        <div class="service-item">
+          <div class="service-icon">🍂</div>
+          <div class="service-content">
+            <div class="service-title">Spring Cleanup — All 4 Beds</div>
+            <div class="service-desc">Full removal of dead material, leaves, and winter debris from all four garden beds. We haul everything away — nothing gets piled in your yard. Beds get hand-raked and edged to a clean, crisp line before mulch goes in.</div>
+            <div class="service-note">Result: The bones of a beautiful yard, ready for mulch and the season.</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">🌿</div>
+          <div class="service-content">
+            <div class="service-title">Fresh Mulch — 6 Cubic Yards, All Beds</div>
+            <div class="service-desc">We'll install 3 inches of premium hardwood mulch across all four beds. Not too thick, not too thin — the right depth to hold moisture, suppress weeds, and give your beds the dark, rich look that makes the whole yard look intentional. Color: deep brown (or black if preferred).</div>
+            <div class="service-note">Result: The single biggest visual upgrade you can make to a yard in one afternoon.</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">✂️</div>
+          <div class="service-content">
+            <div class="service-title">Shrub Trimming — East Fence Row (12 shrubs)</div>
+            <div class="service-desc">Your 12 arborvitae along the east fence get cut back to a consistent, clean shape. Right now they're 18–24 inches past where they should be. After trimming, they'll create the privacy screen you wanted when you planted them — instead of just looking overgrown.</div>
+            <div class="service-note">Result: A clean, defined back border that actually provides privacy.</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">🌱</div>
+          <div class="service-content">
+            <div class="service-title">Lawn Fertilization + Pre-Emergent Weed Treatment</div>
+            <div class="service-desc">A slow-release spring fertilizer gives your lawn the nitrogen it needs to green up fast and stay thick all season. Pre-emergent goes down at the same time to prevent crabgrass and summer annuals before they germinate. This one application pays for itself in the weeds you won't have to pull in July.</div>
+            <div class="service-note">Result: A lawn that greens up fast and stays weed-free through summer.</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">🔲</div>
+          <div class="service-content">
+            <div class="service-title">Full Bed Edging — All Beds + Driveway Strip</div>
+            <div class="service-desc">Clean mechanical edging along every bed line and the grass strip between your lawn and driveway. A properly edged yard looks like a professional landscaper maintains it year-round — this is the detail that separates "nice yard" from "wow, that yard."</div>
+            <div class="service-note">Result: The sharp lines that make everything else look intentional.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY GREENSCAPE PRO -->
+  <section class="why" id="why">
+    <div class="container">
+      <p class="section-eyebrow" style="color:rgba(201,168,76,0.8);">Why Greenscape Pro</p>
+      <h2 class="section-headline">We've worked in your neighborhood for 8 years. Your neighbors trust us.</h2>
+      <p class="section-body">We do 120+ cleanups every spring in the greater Columbus area. We're not the cheapest option — and there's a reason for that. We show up on the scheduled day, we haul everything away, and we don't leave until it's done right.</p>
+
+      <div class="stats-row">
+        <div class="stat"><div class="num">8</div><div class="label">Years in Columbus</div></div>
+        <div class="stat"><div class="num">120+</div><div class="label">Spring cleanups yearly</div></div>
+        <div class="stat"><div class="num">4.9★</div><div class="label">Google rating (147 reviews)</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">Debris hauled away</div></div>
+      </div>
+
+      <div class="promises">
+        <div class="promise">
+          <div class="icon">📅</div>
+          <h4>Punctual Guarantee</h4>
+          <p>If we're more than 30 minutes late without notice, we take $50 off your invoice. Your time is valuable.</p>
+        </div>
+        <div class="promise">
+          <div class="icon">🧹</div>
+          <h4>Full Haul-Away</h4>
+          <p>Every bag, every branch, every bit of debris leaves with us. You won't have a pile sitting in your yard for a week.</p>
+        </div>
+        <div class="promise">
+          <div class="icon">🌧️</div>
+          <h4>Weather Rescheduling</h4>
+          <p>If rain pushes your date, we'll reschedule within 48 hours — still before your deadline.</p>
+        </div>
+        <div class="promise">
+          <div class="icon">✅</div>
+          <h4>Satisfaction Walkthrough</h4>
+          <p>When we're done, we walk you through everything. If anything isn't right, we fix it before we leave.</p>
+        </div>
+      </div>
+
+      <div class="review">
+        <p>"They came on time, worked fast, and my yard looked better than I expected. The mulch color they recommended was perfect. Already booked them for fall cleanup."</p>
+        <cite>— Patricia W., Westerville OH (Google Review)</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <p class="section-eyebrow">Your investment</p>
+      <h2 class="section-headline">Everything is included. Add what you need, skip what you don't.</h2>
+      <p class="section-body">All core services are checked below — that's our recommended package based on your yard. The optional power wash is a popular add-on for clients who want the full refresh.</p>
+
+      <div class="service-toggles">
+
+        <div class="stoggle">
+          <input type="checkbox" id="s1" checked>
+          <label for="s1">
+            <div class="st-left">
+              <div class="chk">✓</div>
+              <div>
+                <div class="st-name">Spring Cleanup — 4 Beds</div>
+                <div class="st-desc">Full debris removal, haul-away, bed edging</div>
+              </div>
+            </div>
+            <div class="st-price">$480</div>
+          </label>
+        </div>
+
+        <div class="stoggle">
+          <input type="checkbox" id="s2" checked>
+          <label for="s2">
+            <div class="st-left">
+              <div class="chk">✓</div>
+              <div>
+                <div class="st-name">Fresh Mulch — 6 Cubic Yards</div>
+                <div class="st-desc">Premium hardwood, all beds, 3-inch depth</div>
+              </div>
+            </div>
+            <div class="st-price">$1,140</div>
+          </label>
+        </div>
+
+        <div class="stoggle">
+          <input type="checkbox" id="s3" checked>
+          <label for="s3">
+            <div class="st-left">
+              <div class="chk">✓</div>
+              <div>
+                <div class="st-name">Shrub Trimming — 12 Arborvitae</div>
+                <div class="st-desc">East fence row, shaped and cleaned up</div>
+              </div>
+            </div>
+            <div class="st-price">$720</div>
+          </label>
+        </div>
+
+        <div class="stoggle">
+          <input type="checkbox" id="s4" checked>
+          <label for="s4">
+            <div class="st-left">
+              <div class="chk">✓</div>
+              <div>
+                <div class="st-name">Lawn Fertilization + Pre-Emergent</div>
+                <div class="st-desc">Spring feed and weed prevention, full lawn</div>
+              </div>
+            </div>
+            <div class="st-price">$280</div>
+          </label>
+        </div>
+
+        <div class="stoggle">
+          <input type="checkbox" id="s5" checked>
+          <label for="s5">
+            <div class="st-left">
+              <div class="chk">✓</div>
+              <div>
+                <div class="st-name">Full Bed Edging + Driveway Strip</div>
+                <div class="st-desc">Mechanical edging, crisp lines throughout</div>
+              </div>
+            </div>
+            <div class="st-price">$180</div>
+          </label>
+        </div>
+
+        <div class="stoggle">
+          <input type="checkbox" id="s6">
+          <label for="s6">
+            <div class="st-left">
+              <div class="chk"></div>
+              <div>
+                <div class="st-name">Optional: Driveway + Walkway Power Wash</div>
+                <div class="st-desc">Complete the look — winter staining removed</div>
+              </div>
+            </div>
+            <div class="st-price">+$220</div>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="price-summary">
+        <h3>Your total</h3>
+        <div class="total" id="grand-total">$2,800</div>
+        <div class="sub-note" id="sub-note">Core spring package — all 5 services. Optional power wash adds $220.</div>
+        <div class="value-note">
+          Spring cleanups are typically <strong>30–40% more expensive</strong> in the last two weeks of May as demand spikes. Booking now locks this price and your preferred date.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / APPROVE -->
+  <section class="cta-section" id="approve">
+    <div class="container">
+      <div class="cta-card">
+        <div class="availability-badge">⚡ Limited May slots remaining</div>
+        <h2>Ready to have it done before Memorial Day?</h2>
+        <p>
+          We can schedule your start date as early as May 12th. Once our May slots are full, we move into June. Click below and Kevin will call you within 2 hours to confirm your date.
+        </p>
+        <a href="mailto:kevin@greenscapepro.com?subject=Approve proposal — Okafor cleanup&body=Hi Kevin, I've reviewed the quote and I'm ready to schedule. Please call me to confirm my start date." class="btn-primary" style="font-size: 17px; padding: 16px 40px;">
+          Approve &amp; Schedule My Cleanup →
+        </a>
+        <p class="cta-note">Questions? Text Kevin directly: (614) 555-0847</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="brand-footer">Greenscape Pro</div>
+    <p>Columbus, Ohio · 4.9★ on Google · Serving Central Ohio since 2017</p>
+    <p style="margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.2);">
+      This quote experience was created by <a href="https://greenclose.io" style="color:rgba(201,168,76,0.45); text-decoration:none;">GreenClose</a> — interactive proposals for landscaping professionals.
+    </p>
+  </footer>
+
+  <script>
+    // Scroll-triggered service animations
+    const items = document.querySelectorAll('.service-item');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 70);
+        }
+      });
+    }, { threshold: 0.12 });
+    items.forEach(el => obs.observe(el));
+
+    // Live pricing calculator
+    const prices = { s1: 480, s2: 1140, s3: 720, s4: 280, s5: 180, s6: 220 };
+    const totalEl = document.getElementById('grand-total');
+    const noteEl = document.getElementById('sub-note');
+
+    function recalc() {
+      let total = 0;
+      for (const [id, price] of Object.entries(prices)) {
+        const cb = document.getElementById(id);
+        if (cb && cb.checked) total += price;
+      }
+      totalEl.textContent = '$' + total.toLocaleString();
+      const s6 = document.getElementById('s6');
+      if (s6 && s6.checked) {
+        noteEl.textContent = 'Full package including driveway + walkway power wash.';
+      } else {
+        noteEl.textContent = 'Core spring package. Add the optional power wash for +$220.';
+      }
+    }
+
+    document.querySelectorAll('.stoggle input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', recalc);
+    });
+    recalc();
+  </script>
+</body>
+</html>

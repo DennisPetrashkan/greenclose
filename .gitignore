@@ -8,6 +8,8 @@ node_modules/
 data/
 frontend/quotes/*
 !frontend/quotes/DEMO001.html
+!frontend/quotes/DEMO002.html
+!frontend/quotes/DEMO003.html
 .DS_Store
 *.pid
 heartbeat.txt
