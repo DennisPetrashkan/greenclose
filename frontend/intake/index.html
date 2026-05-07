@@ -454,25 +454,29 @@
   </form>
 </div>
 
-<!-- Success State -->
-<div id="success">
+<!-- Hidden Formspree fields -->
+<input type="hidden" name="_subject" value="🌿 New GreenClose Quote Request">
+<input type="hidden" name="_next" value="https://dennispetrashkan.github.io/greenclose/frontend/intake/thankyou.html">
+<input type="hidden" name="_captcha" value="false">
+
+<!-- Success State (shown if JS intercepts submission) -->
+<div id="success" style="display:none;">
   <div class="icon">✅</div>
   <h2>You're all set.</h2>
-  <p>Your quote experience for <strong id="success-client"></strong> is being generated right now.</p>
-  <div class="job-badge" id="success-job-id">—</div>
+  <p>Your quote experience for <strong id="success-client"></strong> is on its way.</p>
   <p>We'll send it to <strong id="success-email"></strong> within 48 hours.<br>
   Expect something that looks nothing like a PDF.</p>
-  <p style="margin-top: 24px; color: var(--text-muted); font-size: 14px;">Save your Job ID above in case you need to reference it.</p>
+  <p style="margin-top: 24px; color: var(--text-muted); font-size: 14px;">Questions? Email <a href="mailto:slothbound@gmail.com" style="color: var(--gold);">slothbound@gmail.com</a></p>
 </div>
 
 <script>
-  const API_BASE = window.location.origin.includes('localhost')
-    ? 'http://localhost:8000'
-    : 'https://greenclose.onrender.com';
-
   const form = document.getElementById('intake-form');
   const submitBtn = document.getElementById('submit-btn');
   const errorMsg = document.getElementById('error-msg');
+
+  // Set Formspree action on the form
+  form.setAttribute('action', 'https://formspree.io/slothbound@gmail.com');
+  form.setAttribute('method', 'POST');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -486,59 +490,52 @@
       if (value !== '') data[key] = value;
     }
 
-    // Coerce total_price to number
-    if (data.total_price) data.total_price = parseFloat(data.total_price);
-    if (!data.client_email) data.client_email = '';
-
     try {
-      // Step 1: Submit intake to create job record
-      const resp = await fetch(`${API_BASE}/api/intake`, {
+      const resp = await fetch('https://formspree.io/slothbound@gmail.com', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: fd,
+        headers: { 'Accept': 'application/json' }
       });
 
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.detail || `Server error ${resp.status}`);
+      if (resp.ok) {
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('success-client').textContent = data.client_name || 'your client';
+        document.getElementById('success-email').textContent = data.contractor_email;
+        document.getElementById('success').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // Fallback: open mailto with all data pre-filled
+        const subject = encodeURIComponent('GreenClose Quote Request — ' + (data.contractor_company || data.contractor_name || 'New Contractor'));
+        const body = encodeURIComponent(
+          'CONTRACTOR: ' + (data.contractor_name || '') + '\n' +
+          'COMPANY: ' + (data.contractor_company || '') + '\n' +
+          'EMAIL: ' + (data.contractor_email || '') + '\n' +
+          'PHONE: ' + (data.contractor_phone || '') + '\n\n' +
+          'CLIENT NAME: ' + (data.client_name || '') + '\n' +
+          'CLIENT EMAIL: ' + (data.client_email || '') + '\n' +
+          'PROJECT ADDRESS: ' + (data.project_address || '') + '\n\n' +
+          'PACKAGE: ' + (data.package || 'first_win') + '\n' +
+          'TOTAL PRICE: $' + (data.total_price || '') + '\n\n' +
+          'SCOPE OF WORK:\n' + (data.scope || '') + '\n\n' +
+          'TIMELINE: ' + (data.timeline || '') + '\n\n' +
+          'GUARANTEES: ' + (data.guarantees || '') + '\n\n' +
+          'TESTIMONIALS: ' + (data.testimonials || '') + '\n\n' +
+          'NOTES: ' + (data.notes || '')
+        );
+        window.location.href = 'mailto:slothbound@gmail.com?subject=' + subject + '&body=' + body;
       }
-
-      const result = await resp.json();
-
-      // Step 2: Attempt payment checkout (if Stripe is configured)
-      submitBtn.innerHTML = '<span class="spinner"></span> Redirecting to payment...';
-
-      const checkoutResp = await fetch(`${API_BASE}/api/checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          job_id: result.job_id,
-          package: data.package || 'first_win',
-          contractor_email: data.contractor_email,
-        }),
-      });
-
-      if (checkoutResp.ok) {
-        const { checkout_url } = await checkoutResp.json();
-        // Redirect to Stripe Checkout
-        window.location.href = checkout_url;
-        return;
-      }
-
-      // Stripe not configured yet — show success state directly (dev/pre-launch mode)
-      document.getElementById('form-view').style.display = 'none';
-      document.getElementById('success-client').textContent = data.client_name || 'your client';
-      document.getElementById('success-email').textContent = data.contractor_email;
-      document.getElementById('success-job-id').textContent = result.job_id;
-      document.getElementById('success').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
-      console.error(err);
-      errorMsg.textContent = err.message || 'Something went wrong. Please try again.';
-      errorMsg.style.display = 'block';
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Generate My Quote Experience →';
+      // Network error — open mailto fallback
+      const subject = encodeURIComponent('GreenClose Quote Request — ' + (data.client_name || 'New'));
+      const body = encodeURIComponent(
+        'CONTRACTOR: ' + (data.contractor_name || '') + '\n' +
+        'EMAIL: ' + (data.contractor_email || '') + '\n' +
+        'CLIENT: ' + (data.client_name || '') + '\n' +
+        'PRICE: $' + (data.total_price || '') + '\n\n' +
+        'SCOPE:\n' + (data.scope || '')
+      );
+      window.location.href = 'mailto:slothbound@gmail.com?subject=' + subject + '&body=' + body;
     }
   });
 </script>
