@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenClose — Submit Your Quote</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1B4332;
+      --green-light: #2D6A4F;
+      --gold: #C9A84C;
+      --bg: #0F1117;
+      --surface: #1A1D27;
+      --surface2: #22263A;
+      --text: #FFFFFF;
+      --text-muted: rgba(255,255,255,0.55);
+      --border: rgba(255,255,255,0.1);
+      --radius: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo { color: var(--gold); font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+    .logo span { color: rgba(201,168,76,0.5); font-weight: 400; font-size: 14px; margin-left: 8px; letter-spacing: 0; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 56px 24px 40px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--gold); font-style: normal; }
+    .hero p {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 32px;
+    }
+
+    /* How it works */
+    .steps {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      text-align: center;
+      width: 160px;
+    }
+    .step-num {
+      width: 32px; height: 32px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px;
+      margin: 0 auto 8px;
+      color: var(--gold);
+    }
+    .step p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .step strong { font-size: 14px; }
+
+    /* Form */
+    .form-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 540px) { .field-row { grid-template-columns: 1fr; } }
+
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    label .req { color: var(--gold); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--text);
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.2);
+    }
+    textarea { resize: vertical; min-height: 100px; }
+    select option { background: #1A1D27; }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.25); }
+
+    .hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* Package selector */
+    .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 560px) { .packages { grid-template-columns: 1fr; } }
+
+    .pkg-label { cursor: pointer; display: block; }
+    .pkg-label input[type="radio"] { display: none; }
+    .pkg-card {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .pkg-label input:checked + .pkg-card {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.07);
+    }
+    .pkg-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .pkg-price { color: var(--gold); font-weight: 700; font-size: 18px; margin-bottom: 6px; }
+    .pkg-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .pkg-popular {
+      display: inline-block;
+      background: var(--green);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    /* Submit */
+    .submit-section { text-align: center; padding-top: 8px; }
+    .submit-btn {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 18px 48px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      width: 100%;
+      max-width: 400px;
+      letter-spacing: 0.3px;
+    }
+    .submit-btn:hover { background: var(--green-light); }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .submit-note { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
+
+    /* Success state */
+    #success {
+      display: none;
+      text-align: center;
+      padding: 64px 24px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    #success .icon { font-size: 56px; margin-bottom: 16px; }
+    #success h2 { font-size: 28px; margin-bottom: 12px; }
+    #success p { color: var(--text-muted); font-size: 16px; }
+    #success .job-badge {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: monospace;
+      font-size: 20px;
+      color: var(--gold);
+      margin: 20px 0;
+      letter-spacing: 2px;
+    }
+
+    /* Error */
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">GreenClose <span>Quote Experience Engine</span></div>
+</header>
+
+<div id="form-view">
+  <div class="hero">
+    <h1>Turn Your Quote Into<br><em>A Closing Machine</em></h1>
+    <p>Fill this out once. We'll deliver a stunning interactive quote experience your homeowner will actually read — and approve.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <strong>Fill this form</strong>
+        <p>5–10 min, one time</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <strong>We generate</strong>
+        <p>Within 24–48hrs</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <strong>You send</strong>
+        <p>Link to homeowner</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <strong>They close</strong>
+        <p>That's the whole point</p>
+      </div>
+    </div>
+  </div>
+
+  <form class="form-wrap" id="intake-form">
+
+    <!-- Package Selection -->
+    <div class="section-card">
+      <div class="section-title">Choose Your Package</div>
+      <div class="packages">
+        <label class="pkg-label">
+          <input type="radio" name="package" value="first_win">
+          <div class="pkg-card">
+            <div class="pkg-name">First Win</div>
+            <div class="pkg-price">$49</div>
+            <div class="pkg-desc">1 quote experience<br>48hr delivery<br>1 revision</div>
+          </div>
+        </label>
+        <label class="pkg-label">
+          <input type="radio" name="package" value="closing_machine" checked>
+          <div class="pkg-card">
+            <div class="pkg-popular">Most Popular</div>
+            <div class="pkg-name">Closing Machine</div>
+            <div class="pkg-price">$199<span style="font-size:13px;font-weight:400">/mo</span></div>
+            <div class="pkg-desc">10 quotes/month<br>24hr delivery<br>Unlimited revisions</div>
+          </div>
+        </label>
+        <label class="pkg-label">
+          <input type="radio" name="package" value="market_dominator">
+          <div class="pkg-card">
+            <div class="pkg-name">Market Dominator</div>
+            <div class="pkg-price">$349<span style="font-size:13px;font-weight:400">/mo</span></div>
+            <div class="pkg-desc">Unlimited quotes<br>12hr priority<br>Phone support</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Your Info -->
+    <div class="section-card">
+      <div class="section-title">Your Business</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Your Name <span class="req">*</span></label>
+          <input type="text" name="contractor_name" placeholder="Marcus Rivera" required>
+        </div>
+        <div class="field">
+          <label>Company Name <span class="req">*</span></label>
+          <input type="text" name="company_name" placeholder="Rivera Outdoor Living" required>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Your Email <span class="req">*</span></label>
+          <input type="email" name="contractor_email" placeholder="you@yourcompany.com" required>
+          <p class="hint">We'll send your finished quote here</p>
+        </div>
+        <div class="field">
+          <label>Your Phone</label>
+          <input type="tel" name="contractor_phone" placeholder="(555) 000-0000">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Brand Colors</label>
+          <input type="text" name="brand_colors" placeholder="e.g. dark green and gold">
+          <p class="hint">We'll match your quote page to your brand</p>
+        </div>
+        <div class="field">
+          <label>Logo URL</label>
+          <input type="url" name="logo_url" placeholder="https://...">
+          <p class="hint">Direct link to your logo image</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>About You / Your Bio</label>
+        <textarea name="contractor_bio" placeholder="How long you've been in the business, certifications, number of completed projects, what makes you different..."></textarea>
+        <p class="hint">The more you give us, the more convincing we can make the credibility section</p>
+      </div>
+    </div>
+
+    <!-- Client Info -->
+    <div class="section-card">
+      <div class="section-title">The Homeowner</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Homeowner Name <span class="req">*</span></label>
+          <input type="text" name="client_name" placeholder="The Henderson Family" required>
+        </div>
+        <div class="field">
+          <label>Homeowner Email</label>
+          <input type="email" name="client_email" placeholder="henderson@email.com">
+          <p class="hint">For sending directly (optional)</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>Project Address <span class="req">*</span></label>
+        <input type="text" name="project_address" placeholder="4821 Willow Creek Dr, Chesterfield, MO 63017" required>
+      </div>
+    </div>
+
+    <!-- Project Details -->
+    <div class="section-card">
+      <div class="section-title">The Project</div>
+      <div class="field">
+        <label>Scope of Work <span class="req">*</span></label>
+        <textarea name="scope_of_work" style="min-height:140px" placeholder="Describe everything you're doing. Be specific — what's getting removed, installed, graded, planted, lit. The more detail you give, the better the quote page will be." required></textarea>
+      </div>
+      <div class="field">
+        <label>Pricing Breakdown <span class="req">*</span></label>
+        <textarea name="pricing_breakdown" placeholder="Phase 1 — Grading & Drainage: $3,200&#10;Phase 2 — Patio & Hardscape: $8,400&#10;Phase 3 — Sod Installation: $4,800&#10;..." required></textarea>
+        <p class="hint">Line items, phases, or however you break it down. Include optional add-ons if any.</p>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Total Price <span class="req">*</span></label>
+          <input type="number" name="total_price" placeholder="25000" min="0" step="0.01" required>
+        </div>
+        <div class="field">
+          <label>Project Timeline</label>
+          <input type="text" name="project_timeline" placeholder="4-5 weeks, starting June 10th">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales Assets -->
+    <div class="section-card">
+      <div class="section-title">Closing Ammunition (Optional but Powerful)</div>
+      <div class="field">
+        <label>Testimonials</label>
+        <textarea name="testimonials" placeholder='"Marcus and his team completely transformed our yard." — The Kowalski Family&#10;&#10;"Professional from first call to final cleanup." — Tom & Linda Marsh'></textarea>
+        <p class="hint">Paste 2-3 real reviews. The more specific, the better.</p>
+      </div>
+      <div class="field">
+        <label>Past Work / Portfolio URLs</label>
+        <input type="text" name="past_work_urls" placeholder="https://yoursite.com/portfolio, https://instagram.com/...">
+        <p class="hint">Links to photos of your work</p>
+      </div>
+      <div class="field">
+        <label>Guarantees You Offer</label>
+        <textarea name="guarantees_offered" placeholder="60-Day Plant Survival Guarantee&#10;Price Lock — your quote is your price, no surprises&#10;On-Time Guarantee — we show up when scheduled"></textarea>
+        <p class="hint">Any promises you stand behind — this kills objections</p>
+      </div>
+      <div class="field">
+        <label>Anything Else We Should Know</label>
+        <textarea name="notes" placeholder="E.g. homeowner mentioned their daughter's party is July 15th and they need it done before then. That's a strong close motivator."></textarea>
+        <p class="hint">Context that helps us personalize the close</p>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-section">
+      <button type="submit" class="submit-btn" id="submit-btn">
+        Generate My Quote Experience →
+      </button>
+      <p class="submit-note">You'll receive your quote experience at the email above within 24-48 hours.</p>
+      <p class="error-msg" id="error-msg">Something went wrong. Please try again or email us.</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- Success State -->
+<div id="success">
+  <div class="icon">✅</div>
+  <h2>You're all set.</h2>
+  <p>Your quote experience for <strong id="success-client"></strong> is being generated right now.</p>
+  <div class="job-badge" id="success-job-id">—</div>
+  <p>We'll send it to <strong id="success-email"></strong> within 48 hours.<br>
+  Expect something that looks nothing like a PDF.</p>
+  <p style="margin-top: 24px; color: var(--text-muted); font-size: 14px;">Save your Job ID above in case you need to reference it.</p>
+</div>
+
+<script>
+  const API_BASE = window.location.origin.includes('localhost')
+    ? 'http://localhost:8000'
+    : 'https://greenclose.onrender.com';
+
+  const form = document.getElementById('intake-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorMsg = document.getElementById('error-msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMsg.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+    const fd = new FormData(form);
+    const data = {};
+    for (const [key, value] of fd.entries()) {
+      if (value !== '') data[key] = value;
+    }
+
+    // Coerce total_price to number
+    if (data.total_price) data.total_price = parseFloat(data.total_price);
+    if (!data.client_email) data.client_email = '';
+
+    try {
+      // Step 1: Submit intake to create job record
+      const resp = await fetch(`${API_BASE}/api/intake`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.detail || `Server error ${resp.status}`);
+      }
+
+      const result = await resp.json();
+
+      // Step 2: Attempt payment checkout (if Stripe is configured)
+      submitBtn.innerHTML = '<span class="spinner"></span> Redirecting to payment...';
+
+      const checkoutResp = await fetch(`${API_BASE}/api/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          job_id: result.job_id,
+          package: data.package || 'first_win',
+          contractor_email: data.contractor_email,
+        }),
+      });
+
+      if (checkoutResp.ok) {
+        const { checkout_url } = await checkoutResp.json();
+        // Redirect to Stripe Checkout
+        window.location.href = checkout_url;
+        return;
+      }
+
+      // Stripe not configured yet — show success state directly (dev/pre-launch mode)
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('success-client').textContent = data.client_name || 'your client';
+      document.getElementById('success-email').textContent = data.contractor_email;
+      document.getElementById('success-job-id').textContent = result.job_id;
+      document.getElementById('success').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+      console.error(err);
+      errorMsg.textContent = err.message || 'Something went wrong. Please try again.';
+      errorMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Generate My Quote Experience →';
+    }
+  });
+</script>
+
+</body>
+</html>

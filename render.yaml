@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: greenclose-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DENNIS_EMAIL
+        value: dvpetrashkan@gmail.com
+      - key: BASE_URL
+        value: https://greenclose.onrender.com
+      - key: GMAIL_ADDRESS
+        value: slothbound@gmail.com
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+    autoDeploy: true
